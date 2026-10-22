@@ -1,0 +1,1501 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sistem Semakan Penghantaran Tugasan Murid | Super Edu Adventure</title>
+  <style>
+    :root {
+      --ink: #3a3353;
+      --muted: #6d6a83;
+      --line: rgba(181, 166, 233, .35);
+      --surface: rgba(255, 255, 255, .88);
+      --paper: #fefbff;
+      --brand: #7c5cff;
+      --brand-dark: #6145de;
+      --brand-soft: #efe9ff;
+      --brand-2: #ff8dc7;
+      --brand-3: #7fe0ff;
+      --green: #16a34a;
+      --green-bg: #dcfce7;
+      --yellow: #c47b00;
+      --yellow-bg: #fff2b7;
+      --gray: #64748b;
+      --gray-bg: #edf2f7;
+      --red: #ef476f;
+      --red-bg: #ffe2ea;
+      --violet: #8b5cf6;
+      --orange: #ff9f43;
+      --sky: #3abff8;
+      --shadow: 0 24px 55px rgba(124, 92, 255, .16);
+      --shadow-soft: 0 14px 30px rgba(255, 141, 199, .14);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(255, 226, 241, .95) 0 14%, transparent 24%),
+        radial-gradient(circle at top right, rgba(201, 246, 255, .98) 0 16%, transparent 24%),
+        linear-gradient(180deg, #fdf7ff 0%, #f6fbff 44%, #fff9f1 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      border-radius: 50%;
+      z-index: -1;
+      filter: blur(6px);
+      opacity: .6;
+    }
+
+    body::before {
+      width: 220px;
+      height: 220px;
+      left: -70px;
+      bottom: 40px;
+      background: rgba(127, 224, 255, .35);
+    }
+
+    body::after {
+      width: 260px;
+      height: 260px;
+      right: -80px;
+      top: 140px;
+      background: rgba(255, 205, 234, .38);
+    }
+
+    button, input, select { font: inherit; }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .topbar {
+      background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(252, 235, 255, .92));
+      border-bottom: 1px solid rgba(124, 92, 255, .12);
+      padding: 20px clamp(16px, 4vw, 36px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      box-shadow: 0 14px 40px rgba(124, 92, 255, .12);
+      backdrop-filter: blur(12px);
+      overflow: hidden;
+    }
+
+    .topbar::after {
+      content: "";
+      position: absolute;
+      inset: auto -10% -18px -10%;
+      height: 60px;
+      background: linear-gradient(90deg, #ffd6ec, #fff0a6, #b9f3ff, #d7d1ff, #ffd6ec);
+      opacity: .55;
+      filter: blur(12px);
+      pointer-events: none;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand-mark {
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      background: linear-gradient(145deg, #fffdfd, #f4e8ff);
+      border: 1px solid rgba(124, 92, 255, .22);
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      box-shadow: 0 12px 26px rgba(124, 92, 255, .18);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-mark::before {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, rgba(127, 224, 255, .28), rgba(255, 141, 199, .2));
+    }
+
+    .brand-mark svg {
+      width: 28px;
+      height: 28px;
+      stroke: var(--brand);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255, 247, 191, .95), rgba(255, 225, 236, .96));
+      color: #8f4f1b;
+      font-weight: 900;
+      font-size: .74rem;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      box-shadow: var(--shadow-soft);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.1rem, 1rem + .6vw, 1.45rem);
+      line-height: 1.2;
+      color: #493b88;
+    }
+
+    .subtitle {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: .92rem;
+      max-width: 620px;
+    }
+
+    .hero-art {
+      position: relative;
+      width: min(340px, 100%);
+      min-height: 118px;
+      flex: 0 0 auto;
+      display: block;
+      z-index: 1;
+    }
+
+    .rainbow { position:absolute; right:26px; top:6px; width:170px; height:96px; border-radius:160px 160px 0 0; overflow:hidden; }
+    .rainbow span { position:absolute; left:50%; transform:translateX(-50%); border-radius:160px 160px 0 0; border:12px solid transparent; border-bottom:0; }
+    .rainbow span:nth-child(1) { inset:0; border-color:#ff7dbb; }
+    .rainbow span:nth-child(2) { inset:12px; border-color:#ffb366; }
+    .rainbow span:nth-child(3) { inset:24px; border-color:#ffe66d; }
+    .rainbow span:nth-child(4) { inset:36px; border-color:#77e58c; }
+    .rainbow span:nth-child(5) { inset:48px; border-color:#66c7ff; }
+    .rainbow span:nth-child(6) { inset:60px; border-color:#9a8dff; }
+
+    .cloud { position:absolute; bottom:6px; width:88px; height:28px; border-radius:999px; background:#ffffff; box-shadow:0 12px 20px rgba(142,149,204,.18); }
+    .cloud::before, .cloud::after { content:""; position:absolute; border-radius:50%; background:inherit; }
+    .cloud::before { width:30px; height:30px; left:10px; top:-14px; }
+    .cloud::after { width:40px; height:40px; right:12px; top:-18px; }
+    .cloud.left { right:150px; bottom:6px; }
+    .cloud.right { right:12px; bottom:0; width:96px; }
+
+    .mascot-bubble { position:absolute; left:12px; top:4px; width:116px; height:116px; border-radius:28px; background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(240,245,255,.95)); border:1px solid rgba(124,92,255,.16); box-shadow:0 16px 28px rgba(124,92,255,.14); display:grid; place-items:center; overflow:hidden; transform:rotate(-4deg); }
+    .mascot-bubble::before { content:""; position:absolute; inset:auto auto 10px 10px; width:22px; height:22px; border-radius:8px; background:rgba(255,225,236,.8); transform:rotate(20deg); }
+    .mascot { font-size:3rem; line-height:1; position:relative; z-index:1; animation:mascotBob 2.2s ease-in-out infinite; }
+    .sparkle { position:absolute; font-size:1rem; animation:floaty 2.4s ease-in-out infinite; opacity:.92; }
+    .sparkle.one { left:104px; top:14px; animation-delay:.2s; }
+    .sparkle.two { right:10px; top:16px; animation-delay:.8s; }
+    .sparkle.three { right:132px; bottom:56px; animation-delay:1.2s; }
+
+    .tabs { display:inline-flex; border:1px solid rgba(124, 92, 255, .16); border-radius:999px; overflow:hidden; background:rgba(255,255,255,.76); flex:0 0 auto; box-shadow:var(--shadow-soft); z-index:2; }
+    .tab-btn { border:0; background:transparent; color:#6c658f; padding:12px 16px; min-height:46px; cursor:pointer; font-weight:800; transition:background .18s ease, color .18s ease, transform .18s ease; }
+    .tab-btn:hover { background:#f7f0ff; color:var(--brand-dark); transform:translateY(-1px); }
+    .tab-btn.active { background:linear-gradient(135deg, var(--brand), var(--brand-2)); color:#ffffff; box-shadow:inset 0 -4px 0 rgba(255,255,255,.22); }
+
+    main { padding:26px clamp(16px, 4vw, 36px) 48px; max-width:1480px; width:100%; margin:0 auto; }
+    .view { display:none; }
+    .view.active { display:block; }
+    .panel { background:var(--surface); border:1px solid rgba(177,165,234,.28); border-radius:26px; box-shadow:var(--shadow); margin-bottom:20px; overflow:hidden; backdrop-filter:blur(14px); }
+    .panel-head { padding:18px 22px; border-bottom:1px solid rgba(177,165,234,.2); display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; background:linear-gradient(135deg, rgba(255,255,255,.92), rgba(242,245,255,.88)); }
+    .panel-title { margin:0; font-size:1rem; color:#4d4583; display:inline-flex; align-items:center; gap:8px; font-weight:900; }
+    .panel-title::before { content:"✨"; font-size:1rem; }
+    .form-grid, .filter-grid { display:grid; gap:14px; padding:20px 22px 24px; }
+    .form-grid { grid-template-columns:repeat(4, minmax(160px, 1fr)); }
+    .filter-grid { grid-template-columns:repeat(5, minmax(150px, 1fr)); }
+    label { display:grid; gap:7px; color:#605685; font-size:.86rem; font-weight:800; }
+    input, select { width:100%; border:1px solid rgba(190,180,238,.75); border-radius:18px; padding:12px 13px; background:rgba(255,255,255,.96); color:var(--ink); min-height:48px; box-shadow:0 2px 0 rgba(124,92,255,.06); transition:border-color .18s ease, box-shadow .18s ease, background .18s ease, transform .18s ease; }
+    input:hover, select:hover { border-color:#b59df9; background:#fffdfd; transform:translateY(-1px); }
+    input:focus, select:focus, button:focus-visible { outline:3px solid rgba(124,92,255,.18); outline-offset:2px; }
+    .toolbar { display:flex; align-items:center; justify-content:flex-end; gap:10px; padding:0 22px 22px; flex-wrap:wrap; }
+
+    .btn { border:0; background:linear-gradient(135deg, var(--brand), var(--brand-2)); color:#ffffff; border-radius:999px; padding:12px 16px; min-height:48px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; font-weight:900; white-space:nowrap; box-shadow:0 10px 0 rgba(93,76,184,.17), 0 16px 26px rgba(124,92,255,.2); transition:transform .16s ease, box-shadow .16s ease, filter .16s ease; position:relative; overflow:hidden; }
+    .btn::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg, transparent, rgba(255,255,255,.28), transparent); transform:translateX(-100%); transition:transform .45s ease; }
+    .btn:hover::after { transform:translateX(100%); }
+    .btn:hover { transform:translateY(-2px) scale(1.01); box-shadow:0 12px 0 rgba(93,76,184,.17), 0 20px 30px rgba(124,92,255,.24); filter:saturate(1.08); }
+    .btn:active { animation:buttonBounce .28s ease; transform:translateY(4px) scale(.98); box-shadow:0 6px 0 rgba(93,76,184,.14), 0 10px 18px rgba(124,92,255,.18); }
+    .btn:disabled { cursor:wait; opacity:.72; }
+    .btn.secondary { background:linear-gradient(135deg, #86d9ff, #7c5cff); box-shadow:0 10px 0 rgba(49,113,209,.15), 0 16px 24px rgba(86,155,255,.22); }
+    .btn.danger { background:linear-gradient(135deg, #ff9dc8, #ffb36b); box-shadow:0 10px 0 rgba(209,92,143,.15), 0 16px 24px rgba(255,145,173,.22); }
+    #saveRecordsBtn { background:linear-gradient(135deg, #74d680, #4ecdc4); box-shadow:0 10px 0 rgba(53,161,108,.15), 0 18px 26px rgba(78,205,196,.2); }
+    button[onclick="printReport()"] { background:linear-gradient(135deg, #7c5cff, #3abff8); box-shadow:0 10px 0 rgba(80,89,198,.15), 0 18px 26px rgba(67,142,255,.2); }
+    .btn svg { width:18px; height:18px; stroke:currentColor; }
+
+    .table-wrap { width:100%; overflow-x:auto; }
+    table { width:100%; border-collapse:separate; border-spacing:0; min-width:820px; background:transparent; }
+    th, td { border-bottom:1px solid rgba(222,226,245,.85); padding:12px; text-align:left; vertical-align:middle; font-size:.92rem; }
+    th { background:linear-gradient(180deg, #fff8fb, #ecf6ff); color:#68589d; font-size:.79rem; text-transform:uppercase; letter-spacing:.04em; }
+    #recordTableArea th { position:static; top:auto; z-index:auto; }
+    tbody tr:hover { background:rgba(251,245,255,.7); }
+    .number-cell { width:58px; text-align:center; color:var(--brand-dark); font-weight:900; }
+    .student-name { min-width:210px; font-weight:800; line-height:1.35; overflow-wrap:anywhere; }
+    .student-name small { display:block; margin-top:3px; color:var(--muted); font-size:.78rem; font-weight:700; }
+
+    .record-context { display:grid; grid-template-columns:repeat(4, minmax(140px, 1fr)); gap:12px; padding:18px 22px; background:linear-gradient(135deg, rgba(255,243,253,.9), rgba(241,249,255,.95)); border-bottom:1px solid rgba(200,193,245,.38); }
+    .record-context span { color:#8576a7; display:block; font-size:.75rem; font-weight:900; text-transform:uppercase; margin-bottom:4px; letter-spacing:.04em; }
+    .record-context strong { display:block; color:var(--ink); font-size:.92rem; line-height:1.3; background:rgba(255,255,255,.8); border:1px solid rgba(255,255,255,.96); border-radius:16px; padding:10px 12px; box-shadow:0 10px 18px rgba(124,92,255,.08); }
+    .record-card-grid { padding:20px 22px 24px; display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px; }
+    .record-card { border-radius:24px; padding:16px; background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,244,255,.96)); border:1px solid rgba(190,180,238,.45); box-shadow:0 18px 28px rgba(124,92,255,.09), inset 0 1px 0 rgba(255,255,255,.9); display:grid; gap:14px; position:relative; overflow:hidden; }
+    .record-card::after { content:""; position:absolute; inset:auto -20px -36px auto; width:120px; height:120px; border-radius:50%; background:rgba(210,239,255,.34); }
+    .task-card-head { display:flex; align-items:center; justify-content:space-between; gap:12px; position:relative; z-index:1; }
+    .student-chip { display:flex; align-items:center; gap:12px; min-width:0; }
+    .student-avatar { width:50px; height:50px; border-radius:18px; display:grid; place-items:center; background:linear-gradient(135deg, #ffd3e9, #c7f0ff); color:#5a4792; font-weight:900; box-shadow:0 10px 18px rgba(124,92,255,.12); flex:0 0 auto; }
+    .subject-mini { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.88); border:1px solid rgba(194,183,245,.45); border-radius:999px; padding:8px 12px; color:#6f63a3; font-weight:800; white-space:nowrap; box-shadow:0 8px 14px rgba(124,92,255,.08); }
+    .status-preview { border-radius:18px; padding:10px 12px; font-weight:800; font-size:.88rem; display:inline-flex; align-items:center; gap:8px; width:fit-content; background:#fff9df; color:#9c6f00; }
+    .status-preview.complete { background:linear-gradient(135deg, #dcfce7, #bbf7d0); color:#166534; }
+    .status-preview.incomplete { background:linear-gradient(135deg, #fff3bf, #ffe2a8); color:#a16207; }
+    .status-preview.absent { background:linear-gradient(135deg, #edf2f7, #e2e8f0); color:#475569; }
+    .status-preview.no-reason { background:linear-gradient(135deg, #ffe2ea, #ffc6d3); color:#be123c; }
+    .status-preview.pending { background:linear-gradient(135deg, #fff5d6, #ffeec8); color:#b27610; }
+    .card-section { display:grid; gap:8px; position:relative; z-index:1; }
+    .card-section-label { font-size:.8rem; color:#867aa8; font-weight:900; text-transform:uppercase; letter-spacing:.04em; }
+    .card-footer { display:flex; align-items:center; justify-content:space-between; gap:10px; position:relative; z-index:1; }
+    .choice-group { display:inline-grid; grid-template-columns:repeat(2, minmax(108px, 1fr)); gap:8px; min-width:230px; }
+    .choice-btn { border:1px solid rgba(205,212,235,.9); background:rgba(255,255,255,.95); color:#645f7e; border-radius:18px; min-height:42px; padding:8px 10px; cursor:pointer; font-weight:900; box-shadow:0 8px 14px rgba(124,92,255,.06); transition:transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease; }
+    .choice-btn:hover { transform:translateY(-1px); border-color:#ae9cf9; box-shadow:0 10px 18px rgba(124,92,255,.12); }
+    .choice-btn.active[data-kind="submit"], .choice-btn.active[data-kind="complete"] { border-color:var(--green); background:linear-gradient(135deg, var(--green-bg), #bbf7d0); color:var(--green); box-shadow:0 10px 18px rgba(22,163,74,.12); }
+    .choice-btn.active[data-kind="missing"], .choice-btn.active[data-kind="incomplete"] { border-color:var(--yellow); background:linear-gradient(135deg, var(--yellow-bg), #fde68a); color:var(--yellow); box-shadow:0 10px 18px rgba(180,83,9,.12); }
+    .choice-btn.active[data-kind="absent"] { border-color:var(--gray); background:linear-gradient(135deg, var(--gray-bg), #f3f4f6); color:var(--gray); }
+    .choice-btn.active[data-kind="no-reason"] { border-color:var(--red); background:linear-gradient(135deg, var(--red-bg), #fecaca); color:var(--red); box-shadow:0 10px 18px rgba(220,38,38,.12); }
+
+    .score-badge, .status-pill, .date-pill { display:inline-flex; align-items:center; justify-content:center; border-radius:999px; min-height:32px; padding:6px 12px; font-weight:900; white-space:nowrap; border:1px solid transparent; }
+    .score-badge { background:linear-gradient(135deg, #fff7ba, #ffe5f2); color:#7c4d00; min-width:70px; border-color:#ffd5e7; box-shadow:0 8px 14px rgba(255,180,112,.16); }
+    .status-pill.cemerlang { background:linear-gradient(135deg, #dcfce7, #bbf7d0); color:#166534; border-color:#86efac; }
+    .status-pill.baik { background:linear-gradient(135deg, #e0f2fe, #dbeafe); color:#075985; border-color:#7dd3fc; }
+    .status-pill.perhatian { background:linear-gradient(135deg, #fef3c7, #ffedd5); color:#92400e; border-color:#fcd34d; }
+    .status-pill.intervensi { background:linear-gradient(135deg, #fee2e2, #ffe4e6); color:#991b1b; border-color:#fca5a5; }
+    .date-pill.green { background:linear-gradient(135deg, var(--green-bg), #bbf7d0); color:var(--green); border-color:#86efac; }
+    .date-pill.yellow { background:linear-gradient(135deg, var(--yellow-bg), #fde68a); color:var(--yellow); border-color:#fcd34d; }
+    .date-pill.gray { background:linear-gradient(135deg, var(--gray-bg), #f3f4f6); color:var(--gray); border-color:#cbd5e1; }
+    .date-pill.red { background:linear-gradient(135deg, var(--red-bg), #fecaca); color:var(--red); border-color:#fca5a5; }
+    .date-pill.blank { background:#f8fafc; color:#98a2b3; border-color:#e4e7ec; }
+
+    .date-header { display:inline-flex; align-items:center; justify-content:center; position:relative; min-width:106px; cursor:help; text-decoration:underline dotted #9a8dff; text-underline-offset:4px; }
+    .date-header:hover::after, .date-header:focus::after { content:attr(data-tooltip); position:absolute; left:50%; top:calc(100% + 8px); transform:translateX(-50%); width:max-content; max-width:260px; background:#55428d; color:#ffffff; padding:8px 10px; border-radius:14px; text-transform:none; letter-spacing:0; font-size:.78rem; line-height:1.35; z-index:30; box-shadow:0 10px 22px rgba(15,23,42,.22); }
+    .empty { padding:34px 20px; color:var(--muted); text-align:center; border-top:1px solid rgba(219,227,239,.8); background:linear-gradient(135deg, rgba(255,255,255,.95), rgba(250,246,255,.92)); border-radius:0 0 24px 24px; }
+    .toast { position:fixed; right:18px; bottom:18px; z-index:60; background:linear-gradient(135deg, #5f50a9, #ff8dc7); color:#ffffff; border-radius:18px; padding:14px 16px; box-shadow:0 18px 30px rgba(124,92,255,.25); font-weight:900; max-width:min(380px, calc(100vw - 36px)); opacity:0; transform:translateY(10px); pointer-events:none; transition:opacity .18s ease, transform .18s ease; }
+    .toast.show { opacity:1; transform:translateY(0); }
+
+    .summary-strip { display:grid; grid-template-columns:repeat(4, minmax(150px, 1fr)); gap:12px; padding:18px 22px 8px; background:linear-gradient(135deg, rgba(255,255,255,.94), rgba(251,246,255,.95)); }
+    .metric { border:1px solid rgba(190,180,238,.35); border-radius:24px; padding:16px; background:linear-gradient(145deg, #ffffff, #f9f6ff); box-shadow:0 14px 24px rgba(124,92,255,.08); position:relative; overflow:hidden; }
+    .metric::after { content:""; position:absolute; width:90px; height:90px; right:-18px; bottom:-34px; border-radius:50%; background:rgba(255,211,233,.35); }
+    .metric:nth-child(2)::after { background:rgba(199,240,255,.35); }
+    .metric:nth-child(3)::after { background:rgba(255,239,184,.45); }
+    .metric:nth-child(4)::after { background:rgba(204,251,241,.45); }
+    .metric:nth-child(5)::after { background:rgba(221,214,254,.45); }
+    .metric span { color:var(--muted); font-weight:800; font-size:.76rem; text-transform:uppercase; letter-spacing:.04em; position:relative; z-index:1; }
+    .metric strong { display:block; margin-top:6px; font-size:1.4rem; color:#55428d; position:relative; z-index:1; }
+
+    .subject-cards { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; padding:0 22px 20px; background:linear-gradient(135deg, rgba(255,255,255,.94), rgba(251,246,255,.95)); }
+    .subject-card { border-radius:22px; padding:16px; background:linear-gradient(145deg, #ffffff, #fffaf6); border:1px solid rgba(210,200,246,.35); box-shadow:0 14px 22px rgba(124,92,255,.08); display:grid; gap:10px; }
+    .subject-card:nth-child(4n+1) { background:linear-gradient(145deg, #fff8fb, #ffffff); }
+    .subject-card:nth-child(4n+2) { background:linear-gradient(145deg, #f4fbff, #ffffff); }
+    .subject-card:nth-child(4n+3) { background:linear-gradient(145deg, #fffdf3, #ffffff); }
+    .subject-card:nth-child(4n+4) { background:linear-gradient(145deg, #f8fff9, #ffffff); }
+    .subject-card-top { display:flex; align-items:center; gap:10px; color:#5a4b95; font-weight:900; }
+    .subject-icon { width:42px; height:42px; border-radius:16px; display:grid; place-items:center; background:linear-gradient(135deg, #ffd8eb, #d9f6ff); box-shadow:0 8px 14px rgba(124,92,255,.1); font-size:1.2rem; }
+    .subject-meta { display:flex; flex-wrap:wrap; gap:8px; }
+    .subject-meta span { display:inline-flex; align-items:center; justify-content:center; min-height:30px; padding:4px 10px; border-radius:999px; background:rgba(255,255,255,.86); border:1px solid rgba(199,191,244,.45); color:#6d5fa0; font-size:.78rem; font-weight:800; }
+
+    .celebration-layer { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:80; }
+    .confetti, .star-burst { position:absolute; top:-20px; animation:confettiFall linear forwards; opacity:.95; }
+    .confetti { width:12px; height:18px; border-radius:6px; }
+    .star-burst { font-size:1.2rem; animation-name:starFall; }
+    .print-title { display:none; }
+    @keyframes mascotBob { 0%,100% { transform:translateY(0);} 50% { transform:translateY(-7px);} }
+    @keyframes floaty { 0%,100% { transform:translateY(0) rotate(0deg);} 50% { transform:translateY(-8px) rotate(10deg);} }
+    @keyframes buttonBounce { 0% { transform:translateY(0) scale(1);} 50% { transform:translateY(4px) scale(.97);} 100% { transform:translateY(2px) scale(.99);} }
+    @keyframes confettiFall { 0% { transform:translateY(0) rotate(0deg); opacity:1;} 100% { transform:translateY(110vh) rotate(480deg); opacity:0;} }
+    @keyframes starFall { 0% { transform:translateY(0) scale(.9) rotate(0deg); opacity:1;} 100% { transform:translateY(105vh) translateX(20px) scale(1.2) rotate(180deg); opacity:0;} }
+    @media (max-width:1080px) { .topbar { align-items:stretch; flex-direction:column; } .hero-art { width:100%; min-height:104px; } .tabs { width:100%; } .tab-btn { flex:1; } .form-grid, .filter-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } #recordTableArea th { position:static; top:auto; } }
+    @media (max-width:700px) { main { padding-inline:12px; } .form-grid, .filter-grid, .summary-strip, .record-context, .subject-cards { grid-template-columns:1fr; } .choice-group { grid-template-columns:1fr; min-width:100%; } .panel-head { padding-inline:16px; } .form-grid, .filter-grid, .summary-strip, .toolbar, .subject-cards, .record-card-grid { padding-inline:16px; } .record-card-grid { grid-template-columns:1fr; } .record-context { padding-inline:16px; } .hero-art { min-height:92px; } .mascot-bubble { width:98px; height:98px; } .rainbow { right:0; width:148px; } h1 { font-size:1.02rem; } .btn, .tab-btn, input, select { min-height:50px; } .topbar { padding-bottom:16px; } }
+    @media print { body { background:#ffffff; } .topbar, .no-print, .tabs, .toolbar, .panel-head.filters, #celebrationLayer, .subject-cards { display:none !important; } main { padding:0; max-width:none; } .panel { box-shadow:none; border:0; margin:0; } .print-content { width:210mm; min-height:297mm; padding:14mm; background:#ffffff; } .print-title { display:block; text-align:center; margin-bottom:14px; } .summary-strip { grid-template-columns:repeat(2, 1fr); } th { position:static; } table { min-width:0; } }
+
+    /* Super Edu Adventure — jadual semakan pantas murid */
+    #recordTableArea { overflow: hidden; width: 100%; }
+    .table-instructions { padding: 13px 20px; font-size: .85rem; color: #66549a; background: #fbf6ff; border-bottom: 1px solid #eee3ff; }
+    .student-table-scroll { overflow-x: auto; overscroll-behavior-x: contain; max-width: 100%; }
+    .student-record-table { min-width: 1460px; border-collapse: separate; border-spacing: 0; width: 100%; table-layout: fixed; }
+    .student-record-table thead th { background: #eeeaff; color: #554390; position: static !important; top: auto !important; z-index: auto !important; text-align: center; vertical-align: middle; white-space: normal; }
+    .student-record-table thead th:nth-child(2) { text-align: left; }
+    .student-record-table td { background: rgba(255,255,255,.96); border-bottom: 1px solid #ebe6f9; padding: 10px 12px; }
+    .student-record-table tbody tr:nth-child(even) td { background: #fbf8ff; }
+    .student-record-table tbody tr:hover td { background: #f4f0ff; }
+    .student-record-table tbody tr { display: table-row !important; }
+    .student-record-table .choice-btn { display: inline-flex; align-items: center; justify-content: center; }
+    .student-record-table .student-name { min-width: 190px; max-width: 260px; font-size: .88rem; }
+    .student-record-table .number-cell { min-width: 50px; }
+    .student-record-table th:nth-child(2), .student-record-table td:nth-child(2) { position: static !important; left: auto !important; z-index: auto !important; box-shadow: none; }
+    .student-record-table th:nth-child(2) { z-index: auto; }
+    .table-buttons { display: flex; align-items: center; gap: 6px; justify-content: center; }
+    .table-choice { border-radius: 13px; min-height: 43px; min-width: 95px; padding: 8px 9px; font-size: .80rem; white-space: nowrap; }
+    .table-choice[data-kind="incomplete"], .table-choice[data-kind="missing"] { min-width: 112px; }
+    .table-choice[data-kind="submit"].active, .table-choice[data-kind="complete"].active { background: #c4f7d9; color: #116238; border-color: #53c68a; }
+    .table-choice[data-kind="missing"].active, .table-choice[data-kind="incomplete"].active { background: #ffebac; color: #825100; border-color: #efc257; }
+    .table-choice[data-kind="absent"].active { background: #e2e8f0; color: #475569; }
+    .table-choice[data-kind="no-reason"].active { background: #ffe1e7; color: #b81947; }
+    .student-record-table .status-preview { font-size: .76rem; padding: 8px 10px; }
+    .student-record-table .score-badge { min-width: 55px; }
+    @media (max-width:700px) {
+      .table-instructions { padding: 12px 14px; }
+      .student-record-table { min-width: 1460px; }
+      .table-choice { min-height: 46px; }
+      .student-record-table th:nth-child(2), .student-record-table td:nth-child(2) { min-width: 150px; max-width: 176px; }
+    }
+    @media print { .table-instructions { display:none; } .student-table-scroll { overflow:visible; } .student-record-table th:nth-child(2), .student-record-table td:nth-child(2) { position: static; } }
+
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            <path d="m9 8 2 2 4-4"></path>
+          </svg>
+        </div>
+        <div class="hero-copy">
+          <span class="eyebrow">🌈 Super Edu Adventure <strong style="margin-left:6px;background:#7455d5;color:white;border-radius:999px;padding:3px 9px;font-size:.7rem">V47 · JADUAL</strong></span>
+          <div>
+            <h1>Sistem Semakan Penghantaran Tugasan Murid</h1>
+            <p class="subtitle">Dashboard pastel bertema pengembaraan pembelajaran dengan kad tugasan comel, statistik guru yang kemas dan pengalaman mesra telefon.</p>
+          </div>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="mascot-bubble"><span class="mascot">🦉</span></div>
+        <div class="rainbow"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="cloud left"></div>
+        <div class="cloud right"></div>
+        <span class="sparkle one">⭐</span>
+        <span class="sparkle two">✨</span>
+        <span class="sparkle three">📚</span>
+      </div>
+      <nav class="tabs" aria-label="Tab utama">
+        <button class="tab-btn active" data-tab="recordView" type="button">Pengisian Rekod</button>
+        <button class="tab-btn" data-tab="dashboardView" type="button">Dashboard Rekod</button>
+      </nav>
+    </header>
+
+    <main>
+      <section id="recordView" class="view active">
+        <div class="panel">
+          <div class="panel-head">
+            <h2 class="panel-title">Maklumat Tugasan</h2>
+            <button class="btn secondary" type="button" id="loadStudentsBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path><path d="M12 15V3"></path></svg>
+              Papar Senarai Murid
+            </button>
+          </div>
+          <div class="form-grid">
+            <label>Kelas
+              <select id="recordClass"></select>
+            </label>
+            <label>Tarikh
+              <input type="date" id="recordDate">
+            </label>
+            <label>Nama Tugasan
+              <input type="text" id="recordAssignment" placeholder="Contoh: Latihan 1">
+            </label>
+            <label>Subjek
+              <select id="recordSubject"></select>
+            </label>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2 class="panel-title">Papar Senarai Murid</h2>
+            <div class="toolbar" style="padding:0">
+              <button class="btn danger" type="button" id="clearCurrentBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="m19 6-1 14H6L5 6"></path></svg>
+                Kosongkan Pilihan
+              </button>
+              <button class="btn" type="button" id="saveRecordsBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"></path><path d="M17 21v-8H7v8"></path><path d="M7 3v5h8"></path></svg>
+                Simpan Rekod
+              </button>
+            </div>
+          </div>
+          <div id="recordTableArea" class="table-wrap">
+            <div class="empty">Lengkapkan maklumat tugasan untuk memaparkan senarai murid.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="dashboardView" class="view">
+        <div class="panel">
+          <div class="panel-head filters">
+            <h2 class="panel-title">Tapisan Dashboard</h2>
+            <button class="btn" type="button" onclick="printReport()">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 14h12v8H6z"></path></svg>
+              Cetak Dashboard
+            </button>
+          </div>
+          <div class="filter-grid">
+            <label>Kelas
+              <select id="filterClass"></select>
+            </label>
+            <label>Subjek
+              <select id="filterSubject"></select>
+            </label>
+            <label>Tarikh Mula
+              <input type="date" id="filterStart">
+            </label>
+            <label>Tarikh Akhir
+              <input type="date" id="filterEnd">
+            </label>
+            <label>Nama Tugasan
+              <input type="text" id="filterAssignment" placeholder="Cari tugasan">
+            </label>
+          </div>
+          <div class="toolbar">
+            <button class="btn secondary" type="button" id="resetFilterBtn">Reset Tapisan</button>
+          </div>
+        </div>
+
+        <div class="panel print-content">
+          <div class="print-title">
+            <h2 style="margin:0 0 4px">Laporan Rekod Penghantaran Tugasan Murid</h2>
+            <p style="margin:0;color:#667085">Ringkasan mata terkumpul mengikut kelas, subjek dan tarikh rekod</p>
+          </div>
+          <div class="summary-strip" id="summaryStrip"></div>
+          <div id="subjectCards" class="subject-cards"></div>
+          <div id="dashboardTableArea" class="table-wrap"></div>
+        </div>
+      </section>
+    </main>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="celebrationLayer" class="celebration-layer" aria-hidden="true"></div>
+  </div>
+
+  <script>
+    const STUDENT_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRvJrDNoxHmg72tqCX92ri4SZqY8f0PAL6KZXKHzt3O6svb84j4tP7uUQP99mCzT3paoagM7DjWqMNU/pub?gid=0&single=true&output=csv";
+    const SUBJECT_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRvJrDNoxHmg72tqCX92ri4SZqY8f0PAL6KZXKHzt3O6svb84j4tP7uUQP99mCzT3paoagM7DjWqMNU/pub?gid=1262893420&single=true&output=csv";
+    const SHEET_PUB_ID = "2PACX-1vRvJrDNoxHmg72tqCX92ri4SZqY8f0PAL6KZXKHzt3O6svb84j4tP7uUQP99mCzT3paoagM7DjWqMNU";
+    // Tampal URL Web App Apps Script yang berakhir dengan /exec di sini.
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMKukVUwRhDZ6a4xq5VooAVp4o2e2GkXTeD785rdzuDU9QGyEWkqMGh0dJ42ffWG9a/exec";
+
+    let classStudents = {};
+    let subjects = [];
+    let sheetDataReady = false;
+    let remoteRecordsReady = false;
+    const scoreMap = {
+      complete: 3,
+      incomplete: 1,
+      absent: 0,
+      "no-reason": -2
+    };
+    const labelMap = {
+      complete: "Lengkap",
+      incomplete: "Tidak Lengkap",
+      absent: "Tidak Hadir",
+      "no-reason": "Tiada Sebab"
+    };
+    const colorMap = {
+      complete: "green",
+      incomplete: "yellow",
+      absent: "gray",
+      "no-reason": "red"
+    };
+
+    let draftRows = [];
+    let draftMetaKey = "";
+    let records = JSON.parse(localStorage.getItem("submissionRecords") || "[]");
+
+    const el = (id) => document.getElementById(id);
+    const today = new Date().toISOString().slice(0, 10);
+
+    function populateSelect(select, options, placeholder, includeAll = false) {
+      const items = includeAll ? ["Semua", ...options] : [placeholder, ...options];
+      select.innerHTML = items.map((item, index) => {
+        const value = includeAll && index === 0 ? "all" : (!includeAll && index === 0 ? "" : item);
+        const disabled = !includeAll && index === 0 ? "disabled selected" : "";
+        return `<option value="${escapeHtml(value)}" ${disabled}>${escapeHtml(item)}</option>`;
+      }).join("");
+      select.disabled = false;
+    }
+
+    function setSelectLoading(select, message) {
+      select.innerHTML = `<option value="">${escapeHtml(message)}</option>`;
+      select.disabled = true;
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[char]));
+    }
+
+    function parseCsv(text) {
+      const rows = [];
+      let row = [];
+      let cell = "";
+      let insideQuotes = false;
+
+      for (let index = 0; index < text.length; index++) {
+        const char = text[index];
+        const next = text[index + 1];
+
+        if (char === '"' && insideQuotes && next === '"') {
+          cell += '"';
+          index++;
+        } else if (char === '"') {
+          insideQuotes = !insideQuotes;
+        } else if (char === "," && !insideQuotes) {
+          row.push(cell.trim());
+          cell = "";
+        } else if ((char === "\n" || char === "\r") && !insideQuotes) {
+          if (char === "\r" && next === "\n") index++;
+          row.push(cell.trim());
+          if (row.some(Boolean)) rows.push(row);
+          row = [];
+          cell = "";
+        } else {
+          cell += char;
+        }
+      }
+
+      row.push(cell.trim());
+      if (row.some(Boolean)) rows.push(row);
+      return rows;
+    }
+
+    async function fetchCsvRows(url) {
+      try {
+        const response = await fetch(`${url}&cacheBust=${Date.now()}`, { cache: "no-store" });
+        if (!response.ok) throw new Error(`Gagal memuat data Google Sheet (${response.status})`);
+        return parseCsv(await response.text());
+      } catch (error) {
+        return fetchSheetRowsWithJsonp(url);
+      }
+    }
+
+    function getGidFromUrl(url) {
+      return new URL(url).searchParams.get("gid") || "0";
+    }
+
+    function getGvizUrl(csvUrl, callbackName) {
+      const gid = getGidFromUrl(csvUrl);
+      const query = new URLSearchParams({
+        gid,
+        tqx: `out:json;responseHandler:${callbackName}`,
+        cacheBust: String(Date.now())
+      });
+      return `https://docs.google.com/spreadsheets/d/e/${SHEET_PUB_ID}/gviz/tq?${query.toString()}`;
+    }
+
+    function fetchSheetRowsWithJsonp(csvUrl) {
+      return new Promise((resolve, reject) => {
+        const callbackName = `handleSheetData_${Date.now()}_${Math.floor(Math.random() * 100000)}`;
+        const script = document.createElement("script");
+        const cleanup = () => {
+          delete window[callbackName];
+          script.remove();
+        };
+
+        window[callbackName] = (payload) => {
+          cleanup();
+          if (payload.status && payload.status !== "ok") {
+            reject(new Error("Google Sheet tidak membenarkan data dimuat."));
+            return;
+          }
+          resolve(convertGvizTableToRows(payload.table));
+        };
+
+        script.onerror = () => {
+          cleanup();
+          reject(new Error("Gagal memuat data Google Sheet."));
+        };
+        script.src = getGvizUrl(csvUrl, callbackName);
+        document.head.appendChild(script);
+      });
+    }
+
+    function convertGvizTableToRows(table) {
+      if (!table || !Array.isArray(table.cols) || !Array.isArray(table.rows)) {
+        throw new Error("Format data Google Sheet tidak sah.");
+      }
+      const headers = table.cols.map((col, index) => (col.label || col.id || `Kolum ${index + 1}`).trim());
+      const rows = table.rows.map((row) =>
+        table.cols.map((_, index) => {
+          const cell = row.c && row.c[index];
+          return cell && cell.v !== null && cell.v !== undefined ? String(cell.v).trim() : "";
+        })
+      );
+      return [headers, ...rows];
+    }
+
+    function buildClassStudents(rows) {
+      const nextClassStudents = {};
+      rows.slice(1).forEach((row) => {
+        const className = (row[0] || "").trim();
+        const studentName = (row[1] || "").trim();
+        if (!className || !studentName) return;
+        if (!nextClassStudents[className]) nextClassStudents[className] = [];
+        if (!nextClassStudents[className].includes(studentName)) {
+          nextClassStudents[className].push(studentName);
+        }
+      });
+      return nextClassStudents;
+    }
+
+    function buildSubjects(rows) {
+      return [...new Set(rows.slice(1).map((row) => (row[1] || "").trim()).filter(Boolean))];
+    }
+
+    function applyDropdownData(nextClassStudents, nextSubjects) {
+      classStudents = nextClassStudents || {};
+      subjects = Array.isArray(nextSubjects) ? nextSubjects : [];
+      sheetDataReady = Object.keys(classStudents).length > 0 && subjects.length > 0;
+
+      if (!sheetDataReady) {
+        throw new Error("Data kelas atau subjek kosong.");
+      }
+
+      populateSelect(el("recordClass"), Object.keys(classStudents), "Pilih kelas");
+      populateSelect(el("recordSubject"), subjects, "Pilih subjek");
+      populateSelect(el("filterClass"), Object.keys(classStudents), "", true);
+      populateSelect(el("filterSubject"), subjects, "", true);
+      el("recordTableArea").innerHTML = `<div class="empty">Data Google Sheet berjaya dimuat. Lengkapkan maklumat tugasan untuk memaparkan senarai murid.</div>`;
+    }
+
+    function isAppsScriptConfigured() {
+      return APPS_SCRIPT_URL.trim().startsWith("https://script.google.com/");
+    }
+
+    function fetchAppsScriptJsonp(params = {}) {
+      return new Promise((resolve, reject) => {
+        if (!isAppsScriptConfigured()) {
+          resolve({ ok: true, records });
+          return;
+        }
+
+        const callbackName = `handleAppScriptData_${Date.now()}_${Math.floor(Math.random() * 100000)}`;
+        const script = document.createElement("script");
+        const url = new URL(APPS_SCRIPT_URL);
+        Object.entries(params).forEach(([key, value]) => url.searchParams.set(key, value));
+        url.searchParams.set("callback", callbackName);
+        url.searchParams.set("cacheBust", Date.now());
+
+        const cleanup = () => {
+          delete window[callbackName];
+          script.remove();
+        };
+
+        window[callbackName] = (payload) => {
+          cleanup();
+          if (!payload || payload.ok === false) {
+            reject(new Error(payload && payload.error ? payload.error : "Gagal membaca rekod Apps Script."));
+            return;
+          }
+          resolve(payload);
+        };
+
+        script.onerror = () => {
+          cleanup();
+          reject(new Error("Gagal menghubungi Apps Script."));
+        };
+        script.src = url.toString();
+        document.head.appendChild(script);
+      });
+    }
+
+    async function loadRemoteRecords() {
+      if (!isAppsScriptConfigured()) {
+        remoteRecordsReady = true;
+        return;
+      }
+
+      try {
+        const payload = await fetchAppsScriptJsonp({ action: "records" });
+        records = Array.isArray(payload.records) ? payload.records : [];
+        localStorage.setItem("submissionRecords", JSON.stringify(records));
+        remoteRecordsReady = true;
+      } catch (error) {
+        remoteRecordsReady = false;
+        showToast(error.message || "Rekod Google Sheet gagal dimuat.");
+      }
+    }
+
+    async function saveRecordsToAppsScript(nextRecords, meta) {
+      if (!isAppsScriptConfigured()) return;
+
+      await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "saveRecords",
+          replace: {
+            className: meta.className,
+            date: meta.date,
+            assignment: meta.assignment,
+            subject: meta.subject
+          },
+          records: nextRecords
+        })
+      });
+    }
+
+    async function loadDropdownData() {
+      try {
+        if (isAppsScriptConfigured()) {
+          const payload = await fetchAppsScriptJsonp({ action: "dropdowns" });
+          applyDropdownData(payload.classStudents, payload.subjects);
+          return;
+        }
+
+        await loadDropdownDataFromCsv();
+      } catch (error) {
+        try {
+          await loadDropdownDataFromCsv();
+        } catch (fallbackError) {
+          sheetDataReady = false;
+          setSelectLoading(el("recordClass"), "Gagal memuat kelas");
+          setSelectLoading(el("recordSubject"), "Gagal memuat subjek");
+          setSelectLoading(el("filterClass"), "Gagal memuat kelas");
+          setSelectLoading(el("filterSubject"), "Gagal memuat subjek");
+          el("recordTableArea").innerHTML = `<div class="empty">Data Google Sheet tidak dapat dimuat. Sila kemas kini Apps Script dengan action dropdowns, deploy semula, kemudian refresh halaman.</div>`;
+          showToast(fallbackError.message || error.message || "Data Google Sheet gagal dimuat.");
+        }
+      }
+    }
+
+    async function loadDropdownDataFromCsv() {
+      const [studentRows, subjectRows] = await Promise.all([
+        fetchCsvRows(STUDENT_SHEET_URL),
+        fetchCsvRows(SUBJECT_SHEET_URL)
+      ]);
+      applyDropdownData(buildClassStudents(studentRows), buildSubjects(subjectRows));
+    }
+
+    async function init() {
+      setSelectLoading(el("recordClass"), "Memuatkan kelas...");
+      setSelectLoading(el("recordSubject"), "Memuatkan subjek...");
+      setSelectLoading(el("filterClass"), "Memuatkan kelas...");
+      setSelectLoading(el("filterSubject"), "Memuatkan subjek...");
+      el("recordDate").value = today;
+      bindEvents();
+      await loadDropdownData();
+      await loadRemoteRecords();
+      renderDashboard();
+    }
+
+    function bindEvents() {
+      document.querySelectorAll(".tab-btn").forEach((button) => {
+        button.addEventListener("click", () => switchTab(button.dataset.tab));
+      });
+      ["recordClass", "recordDate", "recordAssignment", "recordSubject"].forEach((id) => {
+        el(id).addEventListener("change", loadStudentTable);
+        el(id).addEventListener("input", loadStudentTable);
+      });
+      el("loadStudentsBtn").addEventListener("click", loadStudentTable);
+      el("saveRecordsBtn").addEventListener("click", saveRecords);
+      el("clearCurrentBtn").addEventListener("click", clearDraft);
+      ["filterClass", "filterSubject", "filterStart", "filterEnd", "filterAssignment"].forEach((id) => {
+        el(id).addEventListener("input", renderDashboard);
+        el(id).addEventListener("change", renderDashboard);
+      });
+      el("resetFilterBtn").addEventListener("click", () => {
+        el("filterClass").value = "all";
+        el("filterSubject").value = "all";
+        el("filterStart").value = "";
+        el("filterEnd").value = "";
+        el("filterAssignment").value = "";
+        renderDashboard();
+      });
+    }
+
+    async function switchTab(tabId) {
+      document.querySelectorAll(".tab-btn").forEach((button) => button.classList.toggle("active", button.dataset.tab === tabId));
+      document.querySelectorAll(".view").forEach((view) => view.classList.toggle("active", view.id === tabId));
+      if (tabId === "dashboardView") {
+        await loadRemoteRecords();
+        renderDashboard();
+      }
+    }
+
+    function getRecordMeta() {
+      return {
+        className: el("recordClass").value,
+        date: normalizeDateValue(el("recordDate").value),
+        assignment: el("recordAssignment").value.trim(),
+        subject: el("recordSubject").value
+      };
+    }
+
+    function hasCompleteMeta(meta) {
+      return meta.className && meta.date && meta.assignment && meta.subject;
+    }
+
+    function makeMetaKey(meta) {
+      return [meta.className, meta.date, meta.assignment.toLowerCase(), meta.subject].join("|");
+    }
+
+    function getMissingMeta(meta) {
+      const missing = [];
+      if (!meta.className) missing.push("kelas");
+      if (!meta.date) missing.push("tarikh");
+      if (!meta.assignment) missing.push("nama tugasan");
+      if (!meta.subject) missing.push("subjek");
+      return missing;
+    }
+
+    function getStudentsForClass(className) {
+      return Array.isArray(classStudents[className]) ? classStudents[className] : [];
+    }
+
+    function loadStudentTable() {
+      const meta = getRecordMeta();
+      if (!sheetDataReady) {
+        el("recordTableArea").innerHTML = `<div class="empty">Sila tunggu data kelas, nama murid dan subjek dimuat daripada Google Sheet.</div>`;
+        return;
+      }
+      if (!hasCompleteMeta(meta)) {
+        const missing = getMissingMeta(meta).join(", ");
+        el("recordTableArea").innerHTML = `<div class="empty">Lengkapkan ${escapeHtml(missing)} untuk memaparkan senarai murid.</div>`;
+        draftRows = [];
+        draftMetaKey = "";
+        return;
+      }
+
+      const students = getStudentsForClass(meta.className);
+      if (!students.length) {
+        el("recordTableArea").innerHTML = `<div class="empty">Tiada senarai murid untuk kelas ${escapeHtml(meta.className)}.</div>`;
+        draftRows = [];
+        draftMetaKey = "";
+        return;
+      }
+
+      const nextMetaKey = makeMetaKey(meta);
+      const canReuseDraft = draftMetaKey === nextMetaKey;
+      const currentDraft = new Map(draftRows.map((row) => [row.student, row]));
+
+      draftRows = students.map((student) => {
+        const draft = currentDraft.get(student);
+        const existing = records.find((record) =>
+          record.className === meta.className &&
+          record.date === meta.date &&
+          record.assignment.toLowerCase() === meta.assignment.toLowerCase() &&
+          record.subject === meta.subject &&
+          record.student === student
+        );
+        const source = canReuseDraft && draft ? draft : existing;
+        return {
+          student,
+          submission: source ? source.submission : "",
+          detail: source ? source.detail : "",
+          score: source ? source.score : ""
+        };
+      });
+      draftMetaKey = nextMetaKey;
+      renderRecordTable();
+    }
+
+    function renderRecordTable() {
+      if (!draftRows.length) {
+        el("recordTableArea").innerHTML = `<div class="empty">Tiada murid untuk kelas ini.</div>`;
+        return;
+      }
+      const meta = getRecordMeta();
+      const area = el("recordTableArea");
+      const oldScroll = area.querySelector(".student-table-scroll")?.scrollLeft || 0;
+      const rows = draftRows.map((row, index) => {
+        const status = row.detail || "pending";
+        const button = (action, value, label, isActive) => `
+          <button type="button" class="choice-btn table-choice ${isActive ? "active" : ""}"
+            data-action="${action}" data-index="${index}" data-value="${value}"
+            data-kind="${value}" aria-pressed="${isActive ? "true" : "false"}"
+            aria-label="${escapeHtml(row.student)}: ${label}">${label}</button>`;
+        return `<tr>
+          <td class="number-cell">${index + 1}</td>
+          <td class="student-name">${escapeHtml(row.student)}</td>
+          <td><div class="table-buttons">
+            ${button("submission", "submit", "✓ Hantar", row.submission === "submit")}
+            ${button("submission", "missing", "✕ Tidak Hantar", row.submission === "missing")}
+          </div></td>
+          <td><div class="table-buttons">
+            ${button("detail", "complete", "✓ Lengkap", row.detail === "complete")}
+            ${button("detail", "incomplete", "◐ Tidak Lengkap", row.detail === "incomplete")}
+          </div></td>
+          <td><div class="table-buttons">
+            ${button("detail", "absent", "Tidak Hadir", row.detail === "absent")}
+            ${button("detail", "no-reason", "Tiada Sebab", row.detail === "no-reason")}
+          </div></td>
+          <td><span class="status-preview ${status}">${getDetailPreview(row)}</span></td>
+          <td><span class="score-badge">⭐ ${row.score === "" ? "-" : row.score}</span></td>
+        </tr>`;
+      }).join("");
+      area.innerHTML = `
+        <div class="record-context">
+          <div><span>Kelas</span><strong>🏫 ${escapeHtml(meta.className)}</strong></div>
+          <div><span>Tarikh</span><strong>🗓️ ${formatDate(meta.date)}</strong></div>
+          <div><span>Tugasan</span><strong>📝 ${escapeHtml(meta.assignment)}</strong></div>
+          <div><span>Subjek</span><strong>${getSubjectIcon(meta.subject)} ${escapeHtml(meta.subject)}</strong></div>
+        </div>
+        <div class="table-instructions"><strong>📋 V47 — Jadual kemas & header sejajar</strong> · Tandakan status setiap murid. Tekan <strong>Lengkap / Tidak Lengkap</strong> untuk terus menandakan Hantar, atau pilih sebab jika Tidak Hantar.</div>
+        <div class="student-table-scroll">
+          <table class="student-record-table">
+            <colgroup>
+              <col style="width:54px"><col style="width:230px"><col style="width:290px">
+              <col style="width:295px"><col style="width:260px"><col style="width:225px"><col style="width:80px">
+            </colgroup>
+            <thead><tr><th>Bil.</th><th>Nama Murid</th><th>Penghantaran</th><th>Status Tugasan</th><th>Sebab Tidak Hantar</th><th>Status Semasa</th><th>Mata</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>`;
+      area.querySelector(".student-table-scroll").scrollLeft = oldScroll;
+      area.querySelectorAll("[data-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const index = Number(button.dataset.index);
+          if (button.dataset.action === "submission") setSubmission(index, button.dataset.value);
+          else setDetail(index, button.dataset.value);
+        });
+      });
+    }
+
+    function getDetailPreview(row) {
+      if (!row.submission) return "⏳ Belum pilih status";
+      if (!row.detail) return row.submission === "submit" ? "📌 Pilih Lengkap atau Tidak Lengkap" : "📌 Pilih sebab tidak hantar";
+      const icons = { complete: "🌟", incomplete: "📝", absent: "🌥️", "no-reason": "🚨" };
+      return `${icons[row.detail] || "📚"} ${labelMap[row.detail]}`;
+    }
+
+    function getSubjectIcon(subject = "") {
+      const value = String(subject || "").toLowerCase();
+      if (value.includes("sains")) return "🔬";
+      if (value.includes("matematik") || value.includes("math")) return "➗";
+      if (value.includes("bahasa melayu") || value === "bm") return "📘";
+      if (value.includes("bahasa inggeris") || value.includes("english") || value.includes("bi")) return "🔤";
+      if (value.includes("muzik")) return "🎵";
+      if (value.includes("psv") || value.includes("seni")) return "🎨";
+      if (value.includes("rbt") || value.includes("teknologi")) return "🛠️";
+      if (value.includes("sejarah")) return "🏛️";
+      if (value.includes("geografi")) return "🌍";
+      if (value.includes("pendidikan islam") || value.includes("pai")) return "🕌";
+      return "📚";
+    }
+
+    function renderDetailButtons(row, index) {
+      if (row.submission === "submit") {
+        return `
+          <div class="choice-group" role="group" aria-label="Butiran hantar ${escapeHtml(row.student)}">
+            <button type="button" class="choice-btn ${row.detail === "complete" ? "active" : ""}" data-action="detail" data-index="${index}" data-value="complete" data-kind="complete">Lengkap</button>
+            <button type="button" class="choice-btn ${row.detail === "incomplete" ? "active" : ""}" data-action="detail" data-index="${index}" data-value="incomplete" data-kind="incomplete">Tidak Lengkap</button>
+          </div>
+        `;
+      }
+      if (row.submission === "missing") {
+        return `
+          <div class="choice-group" role="group" aria-label="Butiran tidak hantar ${escapeHtml(row.student)}">
+            <button type="button" class="choice-btn ${row.detail === "absent" ? "active" : ""}" data-action="detail" data-index="${index}" data-value="absent" data-kind="absent">Tidak Hadir</button>
+            <button type="button" class="choice-btn ${row.detail === "no-reason" ? "active" : ""}" data-action="detail" data-index="${index}" data-value="no-reason" data-kind="no-reason">Tiada Sebab</button>
+          </div>
+        `;
+      }
+      return `<span class="status-preview pending">⏳ Pilih Hantar atau Tidak Hantar</span>`;
+    }
+
+    function setSubmission(index, value) {
+      const row = draftRows[index];
+      if (!row) return;
+      if (row.submission === value) return;
+      row.submission = value;
+      row.detail = "";
+      row.score = "";
+      renderRecordTable();
+    }
+
+    function setDetail(index, value) {
+      const row = draftRows[index];
+      if (!row) return;
+      row.submission = ["complete", "incomplete"].includes(value) ? "submit" : "missing";
+      row.detail = value;
+      row.score = scoreMap[value];
+      renderRecordTable();
+    }
+
+    function clearDraft() {
+      draftRows = draftRows.map((row) => ({ ...row, submission: "", detail: "", score: "" }));
+      renderRecordTable();
+    }
+
+    async function saveRecords() {
+      const meta = getRecordMeta();
+      if (!hasCompleteMeta(meta)) {
+        showToast("Sila lengkapkan kelas, tarikh, nama tugasan dan subjek.");
+        return;
+      }
+      const incomplete = draftRows.some((row) => row.detail === "");
+      if (!draftRows.length || incomplete) {
+        showToast("Sila lengkapkan pilihan semua murid sebelum simpan.");
+        return;
+      }
+
+      const saveButton = el("saveRecordsBtn");
+      saveButton.disabled = true;
+      saveButton.textContent = "Menyimpan...";
+
+      records = records.filter((record) => !(
+        record.className === meta.className &&
+        record.date === meta.date &&
+        record.assignment.toLowerCase() === meta.assignment.toLowerCase() &&
+        record.subject === meta.subject
+      ));
+
+      const timestamp = new Date().toISOString();
+      const nextRecords = draftRows.map((row) => ({
+        id: `${meta.className}-${meta.subject}-${meta.date}-${meta.assignment}-${row.student}`.toLowerCase().replace(/\s+/g, "-"),
+        ...meta,
+        student: row.student,
+        submission: row.submission,
+        detail: row.detail,
+        score: row.score,
+        savedAt: timestamp
+      }));
+
+      try {
+        await saveRecordsToAppsScript(nextRecords, meta);
+        records = [...records, ...nextRecords];
+        localStorage.setItem("submissionRecords", JSON.stringify(records));
+        if (isAppsScriptConfigured()) await loadRemoteRecords();
+        showToast(isAppsScriptConfigured() ? "Rekod berjaya disimpan ke Google Sheet." : "Rekod berjaya disimpan secara lokal.");
+        triggerCelebration();
+        renderDashboard();
+      } catch (error) {
+        showToast(error.message || "Rekod gagal disimpan.");
+      } finally {
+        saveButton.disabled = false;
+        saveButton.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"></path><path d="M17 21v-8H7v8"></path><path d="M7 3v5h8"></path></svg>
+          Simpan Rekod
+        `;
+      }
+    }
+
+    function showToast(message) {
+      const toast = el("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove("show"), 2400);
+    }
+
+    function getFilteredRecords() {
+      const classFilter = el("filterClass").value;
+      const subjectFilter = el("filterSubject").value;
+      const start = normalizeDateValue(el("filterStart").value);
+      const end = normalizeDateValue(el("filterEnd").value);
+      const assignment = el("filterAssignment").value.trim().toLowerCase();
+      return records.filter((record) => {
+        const recordDate = normalizeDateValue(record.date);
+        const matchClass = classFilter === "all" || record.className === classFilter;
+        const matchSubject = subjectFilter === "all" || record.subject === subjectFilter;
+        const matchStart = !start || recordDate >= start;
+        const matchEnd = !end || recordDate <= end;
+        const matchAssignment = !assignment || record.assignment.toLowerCase().includes(assignment);
+        return matchClass && matchSubject && matchStart && matchEnd && matchAssignment;
+      });
+    }
+
+    function renderDashboard() {
+      const filtered = getFilteredRecords().map(normalizeRecordForView);
+      const dates = [...new Set(filtered.map((record) => record.date).filter(Boolean))].sort();
+      const assignmentsByDate = dates.reduce((acc, date) => {
+        acc[date] = [...new Set(filtered.filter((record) => record.date === date).map((record) => record.assignment))].join(", ");
+        return acc;
+      }, {});
+      const grouped = groupDashboardRows(filtered, dates);
+      renderSummary(filtered, grouped);
+
+      if (!filtered.length) {
+        el("dashboardTableArea").innerHTML = `<div class="empty">Tiada rekod ditemui berdasarkan tapisan semasa.</div>`;
+        return;
+      }
+
+      const dateHeaders = dates.map((date) => `
+        <th><span tabindex="0" class="date-header" data-tooltip="${escapeHtml(assignmentsByDate[date])}">${formatDate(date)}</span></th>
+      `).join("");
+
+      const bodyRows = grouped.map((item, index) => `
+        <tr>
+          <td class="number-cell">${index + 1}</td>
+          <td class="student-name">${escapeHtml(item.student)}</td>
+          <td>${escapeHtml(item.subject)}</td>
+          ${dates.map((date) => renderDateCell(item.recordsByDate[date])).join("")}
+          <td><span class="score-badge">${item.total}</span></td>
+          <td><span class="status-pill ${item.statusClass}">${item.status}</span></td>
+        </tr>
+      `).join("");
+
+      el("dashboardTableArea").innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Bil</th>
+              <th>Nama Murid</th>
+              <th>Subjek</th>
+              ${dateHeaders}
+              <th>Mata Terkumpul</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>${bodyRows}</tbody>
+        </table>
+      `;
+    }
+
+    function groupDashboardRows(filtered, dates) {
+      const map = new Map();
+      filtered.forEach((record) => {
+        const key = `${record.student}|${record.subject}`;
+        if (!map.has(key)) {
+          map.set(key, {
+            student: record.student,
+            subject: record.subject,
+            recordsByDate: {},
+            total: 0
+          });
+        }
+        const row = map.get(key);
+        if (!row.recordsByDate[record.date]) row.recordsByDate[record.date] = [];
+        row.recordsByDate[record.date].push(record);
+        row.total += Number(record.score);
+      });
+      return [...map.values()].sort((a, b) => a.student.localeCompare(b.student)).map((row) => ({
+        ...row,
+        ...getStatus(row.total, dates.length)
+      }));
+    }
+
+    function renderDateCell(dayRecords = []) {
+      if (!dayRecords.length) return `<td><span class="date-pill blank">-</span></td>`;
+      const total = dayRecords.reduce((sum, record) => sum + Number(record.score), 0);
+      const primary = dayRecords[0];
+      const text = dayRecords.length > 1 ? `${total} mata` : labelMap[primary.detail];
+      return `<td><span class="date-pill ${colorMap[primary.detail]}" title="${escapeHtml(dayRecords.map((record) => `${record.assignment}: ${labelMap[record.detail]} (${record.score})`).join(" | "))}">${escapeHtml(text)}</span></td>`;
+    }
+
+    function getStatus(total, dateCount) {
+      const max = Math.max(dateCount * 3, 1);
+      const percent = total / max;
+      if (percent >= .8) return { status: "Cemerlang", statusClass: "cemerlang" };
+      if (percent >= .5) return { status: "Baik", statusClass: "baik" };
+      if (percent >= .2) return { status: "Perhatian", statusClass: "perhatian" };
+      return { status: "Intervensi", statusClass: "intervensi" };
+    }
+
+    function renderSummary(filtered, grouped) {
+      const totalScores = grouped.reduce((sum, row) => sum + row.total, 0);
+      const totalAssignments = new Set(filtered.map((record) => `${record.className}|${record.subject}|${record.date}|${record.assignment.toLowerCase()}`)).size;
+      const submittedCount = filtered.filter((record) => ["complete", "incomplete"].includes(record.detail)).length;
+      const pendingCount = filtered.filter((record) => ["absent", "no-reason"].includes(record.detail)).length;
+      const completeCount = filtered.filter((record) => record.detail === "complete").length;
+
+      el("summaryStrip").innerHTML = `
+        <div class="metric"><span>Jumlah Tugasan</span><strong>${totalAssignments}</strong></div>
+        <div class="metric"><span>Jumlah Murid</span><strong>${grouped.length}</strong></div>
+        <div class="metric"><span>Sudah Hantar</span><strong>${submittedCount}</strong></div>
+        <div class="metric"><span>Belum Hantar</span><strong>${pendingCount}</strong></div>
+        <div class="metric"><span>Hantar Lengkap</span><strong>${completeCount}</strong></div>
+        <div class="metric"><span>Jumlah Mata</span><strong>${totalScores}</strong></div>
+      `;
+
+      const subjectStats = Object.entries(filtered.reduce((acc, record) => {
+        const key = record.subject || "Subjek";
+        if (!acc[key]) acc[key] = { subject: key, records: 0, students: new Set(), submitted: 0, pending: 0 };
+        acc[key].records += 1;
+        acc[key].students.add(record.student);
+        if (["complete", "incomplete"].includes(record.detail)) acc[key].submitted += 1;
+        if (["absent", "no-reason"].includes(record.detail)) acc[key].pending += 1;
+        return acc;
+      }, {}));
+
+      const cards = subjectStats.length ? subjectStats.map(([subject, info]) => `
+        <article class="subject-card">
+          <div class="subject-card-top">
+            <span class="subject-icon">${getSubjectIcon(subject)}</span>
+            <div>
+              <strong>${escapeHtml(subject)}</strong>
+              <div style="color:#7a7397;font-size:.84rem;margin-top:4px">${info.records} rekod penghantaran</div>
+            </div>
+          </div>
+          <div class="subject-meta">
+            <span>👦 ${info.students.size} murid</span>
+            <span>✅ ${info.submitted} hantar</span>
+            <span>⏳ ${info.pending} belum</span>
+          </div>
+        </article>
+      `).join("") : `<div class="empty" style="grid-column:1/-1;border-radius:22px;border:1px dashed rgba(177,165,234,.5)">Tiada data subjek untuk dipaparkan.</div>`;
+
+      el("subjectCards").innerHTML = cards;
+    }
+
+    function normalizeRecordForView(record) {
+      return {
+        ...record,
+        date: normalizeDateValue(record.date)
+      };
+    }
+
+    function normalizeDateValue(value) {
+      if (!value) return "";
+      const raw = String(value).trim();
+      if (!raw) return "";
+
+      const isoMatch = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+      if (isoMatch) {
+        return `${isoMatch[1]}-${isoMatch[2].padStart(2, "0")}-${isoMatch[3].padStart(2, "0")}`;
+      }
+
+      const slashMatch = raw.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+      if (slashMatch) {
+        return `${slashMatch[3]}-${slashMatch[2].padStart(2, "0")}-${slashMatch[1].padStart(2, "0")}`;
+      }
+
+      const parsed = new Date(raw);
+      if (!Number.isNaN(parsed.getTime())) {
+        const year = parsed.getFullYear();
+        const month = String(parsed.getMonth() + 1).padStart(2, "0");
+        const day = String(parsed.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      }
+
+      const serial = Number(raw);
+      if (Number.isFinite(serial) && serial > 20000) {
+        const serialDate = new Date(Math.round((serial - 25569) * 86400 * 1000));
+        const year = serialDate.getUTCFullYear();
+        const month = String(serialDate.getUTCMonth() + 1).padStart(2, "0");
+        const day = String(serialDate.getUTCDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      }
+
+      return "";
+    }
+
+    function formatDate(dateValue) {
+      const normalized = normalizeDateValue(dateValue);
+      if (!normalized) return escapeHtml(dateValue || "-");
+      const date = new Date(`${normalized}T00:00:00`);
+      if (Number.isNaN(date.getTime())) return escapeHtml(dateValue || "-");
+      return date.toLocaleDateString("ms-MY", { day: "2-digit", month: "2-digit", year: "numeric" });
+    }
+
+    function triggerCelebration() {
+      const layer = el("celebrationLayer");
+      if (!layer) return;
+      layer.innerHTML = "";
+      const colors = ["#ff8dc7", "#7c5cff", "#3abff8", "#ffd166", "#7bd88f", "#ff9f43"];
+      for (let i = 0; i < 26; i++) {
+        const piece = document.createElement("span");
+        piece.className = "confetti";
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.background = colors[i % colors.length];
+        piece.style.animationDuration = `${1.8 + Math.random() * 1.4}s`;
+        piece.style.animationDelay = `${Math.random() * 0.25}s`;
+        layer.appendChild(piece);
+      }
+      for (let i = 0; i < 12; i++) {
+        const star = document.createElement("span");
+        star.className = "star-burst";
+        star.textContent = i % 2 === 0 ? "⭐" : "✨";
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.animationDuration = `${2 + Math.random() * 1.2}s`;
+        star.style.animationDelay = `${Math.random() * 0.2}s`;
+        layer.appendChild(star);
+      }
+      clearTimeout(triggerCelebration.timer);
+      triggerCelebration.timer = setTimeout(() => { layer.innerHTML = ""; }, 2600);
+    }
+
+    function printReport() {
+      const printContent = document.querySelector(".print-content");
+      if (!printContent) return;
+
+      const printWindow = window.open("", "_blank");
+      const reportDate = new Date().toLocaleDateString("ms-MY", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+      });
+
+      printWindow.document.write(`
+        <!doctype html>
+        <html lang="ms">
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>Laporan Rekod Penghantaran Tugasan</title>
+          <style>
+            * { box-sizing: border-box; }
+            body {
+              margin: 0;
+              color: #172033;
+              background: #eef2f7;
+              font-family: Arial, Helvetica, sans-serif;
+              line-height: 1.45;
+            }
+            .a4-page {
+              width: 210mm;
+              min-height: 297mm;
+              margin: 0 auto;
+              padding: 14mm;
+              background: #ffffff;
+            }
+            .mb-4 { margin-bottom: 1rem; }
+            .mb-2 { margin-bottom: .5rem; }
+            .text-center { text-align: center; }
+            .text-right { text-align: right; }
+            .font-bold { font-weight: 700; }
+            .grid { display: grid; gap: 12px; }
+            .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+            .border { border: 1px solid #d9dee8; }
+            .rounded { border-radius: 8px; }
+            .p-4 { padding: 1rem; }
+            .report-meta {
+              display: flex;
+              justify-content: space-between;
+              gap: 18px;
+              border-top: 2px solid #155e75;
+              border-bottom: 1px solid #d9dee8;
+              padding: 10px 0;
+              margin-bottom: 14px;
+              color: #475467;
+              font-size: 12px;
+            }
+            h1 { font-size: 20px; margin: 0 0 4px; letter-spacing: 0; }
+            p { margin: 0; }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              font-size: 11px;
+              background: #ffffff;
+            }
+            th, td {
+              border: 1px solid #d9dee8;
+              padding: 7px;
+              text-align: left;
+              vertical-align: middle;
+            }
+            th {
+              background: #eef6f8;
+              color: #23404c;
+              text-transform: uppercase;
+              font-size: 10px;
+            }
+            .summary-strip {
+              display: grid;
+              grid-template-columns: repeat(4, minmax(0, 1fr));
+              gap: 8px;
+              margin-bottom: 14px;
+            }
+            .metric {
+              border: 1px solid #d9dee8;
+              border-radius: 8px;
+              padding: 10px;
+              background: #fcfcfd;
+            }
+            .metric span {
+              color: #667085;
+              font-weight: 700;
+              font-size: 10px;
+              text-transform: uppercase;
+            }
+            .metric strong {
+              display: block;
+              margin-top: 4px;
+              font-size: 18px;
+            }
+            .score-badge, .status-pill, .date-pill {
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              border-radius: 999px;
+              min-height: 24px;
+              padding: 3px 8px;
+              font-weight: 700;
+              border: 1px solid transparent;
+              white-space: nowrap;
+            }
+            .score-badge { background: #eef2ff; color: #4f46e5; }
+            .green, .cemerlang { background: #dcfce7; color: #166534; border-color: #86efac; }
+            .yellow, .perhatian { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+            .gray { background: #e5e7eb; color: #4b5563; border-color: #cbd5e1; }
+            .red, .intervensi { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+            .baik { background: #e0f2fe; color: #075985; border-color: #7dd3fc; }
+            .blank { background: #f8fafc; color: #98a2b3; border-color: #e4e7ec; }
+            .print-title { display: none; }
+            .table-wrap { overflow: visible; }
+            @media print {
+              @page { size: A4; margin: 0; }
+              body { background: #ffffff; }
+              .a4-page { width: 210mm; min-height: 297mm; box-shadow: none; }
+              .grid-cols-2, .grid-cols-4, .summary-strip { grid-template-columns: 1fr; }
+              tr, .metric { break-inside: avoid; page-break-inside: avoid; }
+            }
+            @media screen and (max-width: 800px) {
+              .a4-page { width: 100%; min-height: auto; padding: 18px; }
+              .grid-cols-2, .grid-cols-4, .summary-strip { grid-template-columns: 1fr; }
+              .report-meta { display: block; }
+            }
+          </style>
+        </head>
+        <body>
+          <main class="a4-page">
+            <header class="text-center mb-4">
+              <h1>Laporan Rekod Penghantaran Tugasan Murid</h1>
+              <p>Ringkasan mata terkumpul untuk semakan evidens Tahap Penguasaan</p>
+            </header>
+            <section class="report-meta">
+              <div><strong>Tarikh Cetakan:</strong> ${reportDate}</div>
+              <div><strong>Sumber:</strong> Sistem Semakan Penghantaran Tugasan Murid</div>
+            </section>
+            ${printContent.innerHTML}
+          </main>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+    }
+
+    window.printReport = printReport;
+    init();
+  </script>
+</body>
+</html>
